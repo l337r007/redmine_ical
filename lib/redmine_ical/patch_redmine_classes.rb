@@ -80,7 +80,7 @@ module Plugin
           unloadable
           include ApplicationHelper
           alias_method_chain :show, :ical
-          accept_api_auth :show
+          accept_rss_auth :show
         end
       end
     end
