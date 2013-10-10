@@ -18,6 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 require_dependency 'calendars_controller'
+require_dependency 'application_controller'
 require_dependency 'issue'
 require_dependency 'version'
 
@@ -113,6 +114,32 @@ module Plugin
       end
     end
 
+    module ApplicationController
+      module ClassMethods
+      end
+
+      module InstanceMethods
+        def find_current_user_with_ics_key
+           Rails.logger.info "Trying to auth for ICS with Key"
+           if params[:format] == 'ics' && params[:key] && request.get? && accept_rss_auth?
+             Rails.logger.info "RSS auth allowed."
+             User.find_by_rss_key(params[:key])
+           else
+             find_current_user_without_ics_key
+           end
+        end
+      end
+
+      def self.included(receiver)
+        receiver.extend         ClassMethods
+        receiver.send :include, InstanceMethods
+        receiver.class_eval do
+          unloadable
+          alias_method_chain :find_current_user, :ics_key
+        end
+      end
+    end
+
     module Version
       module ClassMethods
       end
@@ -144,6 +171,9 @@ end
 
 unless CalendarsController.included_modules.include?(::Plugin::Ical::CalendarsController)
     CalendarsController.send(:include, ::Plugin::Ical::CalendarsController)
+end
+unless ApplicationController.included_modules.include?(::Plugin::Ical::ApplicationController)
+    ApplicationController.send(:include, ::Plugin::Ical::ApplicationController)
 end
 unless Issue.included_modules.include?(::Plugin::Ical::Issue)
     Issue.send(:include, ::Plugin::Ical::Issue)
