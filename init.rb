@@ -18,9 +18,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 require 'redmine'
-require 'dispatcher'
 
-Dispatcher.to_prepare do
+Rails.configuration.to_prepare do
   require 'redmine_ical/patch_redmine_classes'
 end
 
