@@ -120,9 +120,7 @@ module Plugin
 
       module InstanceMethods
         def find_current_user_with_ics_key
-           Rails.logger.info "Trying to auth for ICS with Key"
            if params[:format] == 'ics' && params[:key] && request.get? && accept_rss_auth?
-             Rails.logger.info "RSS auth allowed."
              User.find_by_rss_key(params[:key])
            else
              find_current_user_without_ics_key
