@@ -145,7 +145,9 @@ end
 unless CalendarsController.included_modules.include?(::Plugin::Ical::CalendarsController)
     CalendarsController.send(:include, ::Plugin::Ical::CalendarsController)
 end
-Version.send(:include, ::Plugin::Ical::Version)
 unless Issue.included_modules.include?(::Plugin::Ical::Issue)
     Issue.send(:include, ::Plugin::Ical::Issue)
+end
+unless Version.included_modules.include?(::Plugin::Ical::Version)
+    Version.send(:include, ::Plugin::Ical::Version)
 end
